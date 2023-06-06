@@ -1,0 +1,48 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Category {
+  id        String     @id @default(uuid())
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  name      String
+  questions Question[]
+}
+
+model Question {
+  id         String   @id @default(uuid())
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  content    String
+  categoryId String
+  answers    Answer[]
+  category   Category @relation(fields: [categoryId], references: [id])
+}
+
+model Answer {
+  id         String   @id @default(uuid())
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  questionId String
+  content    String
+  isCorrect  Boolean  @default(false)
+  url        String
+  question   Question @relation(fields: [questionId], references: [id])
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  name      String?
+  roles     String
+  isActive  Boolean
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
