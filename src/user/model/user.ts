@@ -1,4 +1,4 @@
-import { ObjectType, Field, Int, ID } from '@nestjs/graphql';
+import { ObjectType, Field, Int, ID, HideField } from '@nestjs/graphql';
 import { ValidRoles } from './../../auth/enums/valid-roles.enum';
 import { IsEnum } from 'class-validator';
 
@@ -14,7 +14,7 @@ export class User {
   @Field( () => String )
   email: string;
 
-  @Field( () => String )
+  @HideField()
   password?: string;
 
   @Field( () => [ValidRoles], { description: 'Roles del Usuario' } )
@@ -26,6 +26,6 @@ export class User {
   //TODO: relaciones
   //@ManyToOne( () => User, (user) => user.lastUpdateBy, { nullable: true, lazy: true })
   //@JoinColumn({ name: 'lastUpdateBy' })
-  /* @Field( () => User, { nullable: true, description: 'lastUpdateBy' })
-  lastUpdateBy?: User; */
+  @Field( () => User, { nullable: true, description: 'lastUpdateBy' })
+  lastUpdateBy?: User;
 }

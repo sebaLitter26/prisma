@@ -4,8 +4,8 @@ const bcrypt = require('bcryptjs');
 
 import { User } from './model/user';
 
-import { CreateUserInput } from './dto/create-user.input';
-import { UpdateUserInput } from './dto/update-user.input';
+import { CreateUserDTO } from './dto/create-user.input';
+import { UpdateUserDTO } from './dto/update-user.input';
 import { ValidRoles } from './../auth/enums/valid-roles.enum';
 
 import { SignupInput } from './../auth/dto/inputs/signup.input';
@@ -19,14 +19,16 @@ export class UserService {
     constructor(private readonly data: PrismaService) {}
   
   
-    async create( signupInput: SignupInput ): Promise<User> {
+    async create( signupInput: SignupInput ) {
       
       try {
   
         return await this.data.user.create({
-            ...signupInput,
-            password: bcrypt.hashSync( signupInput.password, 10 )
-          });
+            data: {
+              ...signupInput,
+              password: bcrypt.hashSync( signupInput.password, 10 )
+            }
+        });
   
   
       } catch (error) {
@@ -35,7 +37,7 @@ export class UserService {
   
     }
   
-    async findAll( roles: ValidRoles[] ): Promise<User[]> {
+    async findAll( roles: ValidRoles[] ) {
   
       if ( roles.length === 0 ) 
         return this.data.user.findMany({
@@ -60,9 +62,9 @@ export class UserService {
     
     }
   
-    async findOneByEmail( email: string ): Promise<User> {
+    async findOneByEmail( email: string ){
       try {
-        return await this.data.user.findUniqueOrThrow({where: { email }});
+        return await this.data.user.findUnique({where: { email }});
       } catch (error) {
         throw new NotFoundException(`${ email } not found`);
         // this.handleDBErrors({
@@ -72,9 +74,9 @@ export class UserService {
       }
     }
   
-    async findOneById( id: string ): Promise<User> {
+    async findOneById( id: string ) {
       try {
-        return await this.data.user.findUniqueOrThrow({where: { id }});
+        return await this.data.user.findUnique({where: { id }});
       } catch (error) {
         throw new NotFoundException(`${ id } not found`);
       }
@@ -82,19 +84,41 @@ export class UserService {
   
     async update(
       id: string, 
-      updateUserInput: UpdateUserInput,
+      updateUserInput: UpdateUserDTO,
       updateBy: User
     ): Promise<User> {
+
+     
   
       try {
-        const user = await this.data.user.preload({
-          ...updateUserInput,
-          id
+        return await this.data.user.upsert({
+          create: {
+            // ... data to create a User
+            //data:{
+              ...updateUserInput,
+              lastUpdateBy: updateBy,
+              id
+            //}
+            
+          },
+          update: {
+            // ... in case it already exists, update
+            data:{
+              ...updateUserInput,
+              lastUpdateBy: updateBy
+            }
+              
+          },
+          where: {
+            id
+            // ... the filter for the User we want to update
+          }
+          
         });
   
-        user.lastUpdateBy = updateBy;
+        //user.lastUpdateBy = updateBy;
   
-        return await this.data.user.save( user );
+        //return await this.data.user.create( user );
   
       } catch (error) {
         this.handleDBErrors( error );
@@ -103,18 +127,22 @@ export class UserService {
       
     }
   
-    async block( id: string, adminUser: User ): Promise<User> {
+    async block( id: string, adminUser: User ) {
       
       const userToBlock = await this.findOneById( id );
+      if (userToBlock) {
+        userToBlock.isActive = false;
+        userToBlock.lastUpdateBy = adminUser;
+    
+        return await this.data.user.create( {data: userToBlock} );
+      }else{
+        throw new NotFoundException(
+          `Este usuario no existe.`,
+        );
   
-      userToBlock.isActive = false;
-      userToBlock.lastUpdateBy = adminUser;
-  
-      return await this.data.user.save( userToBlock );
+      }
   
     }
-  
-  
     private handleDBErrors( error: any ): never {
   
       
