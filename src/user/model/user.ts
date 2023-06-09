@@ -15,7 +15,7 @@ export class User {
   @Field( () => String )
   email: string;
 
-  @Field( () => String )
+  @HideField()
   password?: string;
 
   @IsEnum(Roles)

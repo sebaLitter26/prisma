@@ -1,10 +1,10 @@
-import { CreateUserInput } from './create-user.input';
+import { CreateUserDTO } from './create-user.input';
 import { InputType, Field, Int, PartialType, ID } from '@nestjs/graphql';
 import { IsArray, IsBoolean, IsOptional, IsUUID } from 'class-validator';
 import { Roles } from "@prisma/client";
 
 @InputType()
-export class UpdateUserInput extends PartialType(CreateUserInput) {
+export class UpdateUserDTO extends PartialType(CreateUserDTO) {
   
         @Field(() => ID)
         @IsUUID()

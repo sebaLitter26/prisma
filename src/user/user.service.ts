@@ -21,6 +21,7 @@ export class UserService {
   
   
     async create( signupInput: SignupInput ) {
+    async create( signupInput: SignupInput ) {
       
       try {
   
@@ -66,7 +67,7 @@ export class UserService {
   
     async findOneByEmail( email: string ) {
       try {
-        return await this.data.user.findUniqueOrThrow({where: { email }});
+        return await this.data.user.findUnique({where: { email }});
       } catch (error) {
         throw new NotFoundException(`${ email } not found`);
         // this.handleDBErrors({
@@ -77,8 +78,9 @@ export class UserService {
     }
   
     async findOneById( id: string ) {
+    async findOneById( id: string ) {
       try {
-        return await this.data.user.findUniqueOrThrow({where: { id }});
+        return await this.data.user.findUnique({where: { id }});
       } catch (error) {
         throw new NotFoundException(`${ id } not found`);
       }
@@ -86,7 +88,7 @@ export class UserService {
   
     async update(
       id: string, 
-      updateUserInput: UpdateUserInput,
+      updateUserInput: UpdateUserDTO,
       updateBy: User
     ) {
   
@@ -112,6 +114,7 @@ export class UserService {
     }
   
     async block( id: string, adminUser: User ) {
+    async block( id: string, adminUser: User ) {
       
       const userToBlock = await this.data.user.findUnique({where: {id} });
   
@@ -120,9 +123,9 @@ export class UserService {
   
       return await this.data.user.create( { data:{...userToBlock}} );
   
+      }
+  
     }
-  
-  
     private handleDBErrors( error: any ): never {
   
       
