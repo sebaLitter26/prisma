@@ -5,9 +5,10 @@ import { User } from './model/user';
 import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
 import { ValidRolesArgs } from './dto/args/roles.arg';
-import { ValidRoles } from '../auth/enums/valid-roles.enum';
+//import { ValidRoles } from '../auth/enums/valid-roles.enum';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import { Roles } from "@prisma/client";
 
 @Resolver(() => User)
 @UseGuards( JwtAuthGuard )
@@ -22,7 +23,7 @@ export class UserResolver {
   @Query(() => [User], { name: 'user' })
   async findAll(
     @Args() validRoles: ValidRolesArgs,
-    @CurrentUser([ValidRoles.admin, ValidRoles.superUser ]) user: User
+    @CurrentUser([Roles.admin, Roles.superUser ]) user: User
   ):Promise<User[]> {
 
     return this.userService.findAll( validRoles.roles );
@@ -31,7 +32,7 @@ export class UserResolver {
   @Query(() => User, { name: 'user' })
   findOne( 
     @Args('id', { type: () => ID }, ParseUUIDPipe ) id: string,
-    @CurrentUser([ValidRoles.admin, ValidRoles.superUser ]) user: User
+    @CurrentUser([Roles.admin, Roles.superUser ]) user: User
   ): Promise<User> {
     
     return this.userService.findOneById(id);
@@ -40,7 +41,7 @@ export class UserResolver {
   @Mutation(() => User)
   async updateUser(
     @Args('updateUserInput') updateUserInput: UpdateUserInput,
-    @CurrentUser([ValidRoles.admin ]) user: User
+    @CurrentUser([Roles.admin ]) user: User
   ): Promise<User> {
     return this.userService.update(updateUserInput.id, updateUserInput, user );
   }
@@ -48,7 +49,7 @@ export class UserResolver {
   @Mutation(() => User, { name: 'blockUser' })
   blockUser( 
     @Args('id', { type: () => ID }, ParseUUIDPipe ) id: string,
-    @CurrentUser([ ValidRoles.admin ]) user: User
+    @CurrentUser([ Roles.admin ]) user: User
   ): Promise<User> {
     return this.userService.block(id, user );
   }

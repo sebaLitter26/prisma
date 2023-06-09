@@ -1,12 +1,13 @@
 
 import { registerEnumType } from "@nestjs/graphql";
+import { Roles } from "@prisma/client";
 
-export enum ValidRoles {
+/* export enum ValidRoles {
     admin     = 'admin', 
     user      = 'user',  
     superUser = 'superUser'
-}
+} */
 
-registerEnumType( ValidRoles, { name: 'ValidRoles', description: 'Roles validos para el usuario (admin, user, superUser).' } )
+registerEnumType( Roles, { name: 'ValidRoles', description: 'Roles validos para el usuario (admin, user, superUser). '+ Roles } )
 
 

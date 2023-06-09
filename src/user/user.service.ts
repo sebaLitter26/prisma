@@ -1,12 +1,13 @@
 import { BadRequestException, Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
 const bcrypt = require('bcryptjs');
+import { Roles } from "@prisma/client";
 
 
 import { User } from './model/user';
 
 import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
-import { ValidRoles } from './../auth/enums/valid-roles.enum';
+//import { ValidRoles } from './../auth/enums/valid-roles.enum';
 
 import { SignupInput } from './../auth/dto/inputs/signup.input';
 import { PrismaService } from '../core/prisma/prisma.service';
@@ -19,13 +20,16 @@ export class UserService {
     constructor(private readonly data: PrismaService) {}
   
   
-    async create( signupInput: SignupInput ): Promise<User> {
+    async create( signupInput: SignupInput ) {
       
       try {
   
         return await this.data.user.create({
-            ...signupInput,
-            password: bcrypt.hashSync( signupInput.password, 10 )
+            data: {
+                ...signupInput,
+                isActive: true,
+                password: bcrypt.hashSync( signupInput.password, 10 )
+            }
           });
   
   
@@ -35,7 +39,7 @@ export class UserService {
   
     }
   
-    async findAll( roles: ValidRoles[] ): Promise<User[]> {
+    async findAll( roles: Roles[] ) {
   
       if ( roles.length === 0 ) 
         return this.data.user.findMany({
@@ -49,7 +53,7 @@ export class UserService {
 
       return this.data.user.findMany({
         where: {
-            roles: { in: ['superUser, admin']}
+            roles: { in: ['superUser', 'admin']}
         }
       });
       /* return this.data.user.createQueryBuilder()
@@ -60,7 +64,7 @@ export class UserService {
     
     }
   
-    async findOneByEmail( email: string ): Promise<User> {
+    async findOneByEmail( email: string ) {
       try {
         return await this.data.user.findUniqueOrThrow({where: { email }});
       } catch (error) {
@@ -72,7 +76,7 @@ export class UserService {
       }
     }
   
-    async findOneById( id: string ): Promise<User> {
+    async findOneById( id: string ) {
       try {
         return await this.data.user.findUniqueOrThrow({where: { id }});
       } catch (error) {
@@ -84,17 +88,21 @@ export class UserService {
       id: string, 
       updateUserInput: UpdateUserInput,
       updateBy: User
-    ): Promise<User> {
+    ) {
   
       try {
-        const user = await this.data.user.preload({
-          ...updateUserInput,
-          id
-        });
-  
-        user.lastUpdateBy = updateBy;
-  
-        return await this.data.user.save( user );
+        return await this.data.user.upsert({
+            create: {
+                ...updateUserInput,
+                id
+            },
+            update: {
+                ...updateUserInput,
+                id
+            },
+            where: { id }
+        })
+       
   
       } catch (error) {
         this.handleDBErrors( error );
@@ -103,14 +111,14 @@ export class UserService {
       
     }
   
-    async block( id: string, adminUser: User ): Promise<User> {
+    async block( id: string, adminUser: User ) {
       
-      const userToBlock = await this.findOneById( id );
+      const userToBlock = await this.data.user.findUnique({where: {id} });
   
       userToBlock.isActive = false;
       userToBlock.lastUpdateBy = adminUser;
   
-      return await this.data.user.save( userToBlock );
+      return await this.data.user.create( { data:{...userToBlock}} );
   
     }
   

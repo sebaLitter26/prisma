@@ -8,7 +8,7 @@ import { SignupInput, LoginInput } from './dto/inputs';
 import { AuthResponse } from './types/auth-response.type';
 import { CurrentUser } from './decorators/current-user.decorator';
 import { User } from '../user/model/user';
-import { ValidRoles } from './enums/valid-roles.enum';
+//import { ValidRoles } from './enums/valid-roles.enum';
 
 @Resolver( () => AuthResponse )
 export class AuthResolver {

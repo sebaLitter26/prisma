@@ -1,7 +1,7 @@
 import { CreateUserInput } from './create-user.input';
 import { InputType, Field, Int, PartialType, ID } from '@nestjs/graphql';
 import { IsArray, IsBoolean, IsOptional, IsUUID } from 'class-validator';
-import { ValidRoles } from './../../auth/enums/valid-roles.enum';
+import { Roles } from "@prisma/client";
 
 @InputType()
 export class UpdateUserInput extends PartialType(CreateUserInput) {
@@ -10,13 +10,17 @@ export class UpdateUserInput extends PartialType(CreateUserInput) {
         @IsUUID()
         id: string;
       
-        @Field( () => [ValidRoles], { nullable: true })
+        @Field( () => [String], { nullable: true })
         @IsArray()
         @IsOptional()
-        roles: ValidRoles[];
+        roles: Roles[];
       
         @Field( () => Boolean, { nullable: true })
         @IsBoolean()
         @IsOptional()
         isActive?: boolean;
+
+        /* @Field( () => User, { nullable: true })
+        @IsOptional()
+        lastUpdateBy?: User */
 }

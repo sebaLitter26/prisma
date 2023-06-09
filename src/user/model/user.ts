@@ -1,5 +1,6 @@
 import { ObjectType, Field, Int, ID } from '@nestjs/graphql';
-import { ValidRoles } from './../../auth/enums/valid-roles.enum';
+//import { ValidRoles } from './../../auth/enums/valid-roles.enum';
+import { Roles } from "@prisma/client";
 import { IsEnum } from 'class-validator';
 
 @ObjectType()
@@ -17,8 +18,9 @@ export class User {
   @Field( () => String )
   password?: string;
 
-  @Field( () => [ValidRoles], { description: 'Roles del Usuario' } )
-  roles: ValidRoles[];
+  @IsEnum(Roles)
+  @Field( () => [Roles], { description: 'Roles del Usuario'  } )
+  roles: Roles[];
 
   @Field( () => Boolean, { nullable: true } )
   isActive: boolean;
@@ -26,6 +28,6 @@ export class User {
   //TODO: relaciones
   //@ManyToOne( () => User, (user) => user.lastUpdateBy, { nullable: true, lazy: true })
   //@JoinColumn({ name: 'lastUpdateBy' })
-  /* @Field( () => User, { nullable: true, description: 'lastUpdateBy' })
+ /*  @Field( () => User, { nullable: true, description: 'lastUpdateBy' })
   lastUpdateBy?: User; */
 }

@@ -7,42 +7,56 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Roles {
+  admin
+  user
+  superUser
+}
+
 model Category {
   id        String     @id @default(uuid())
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
-  name      String
+  name      String     @unique
   questions Question[]
+
+  @@index([name])
 }
 
 model Question {
-  id         String   @id @default(uuid())
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id         String    @id @default(uuid())
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
   content    String
-  categoryId String
   answers    Answer[]
-  category   Category @relation(fields: [categoryId], references: [id])
+  categoryId String?
+  category   Category? @relation(fields: [categoryId], references: [id])
 }
 
 model Answer {
-  id         String   @id @default(uuid())
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-  questionId String
+  id         String    @id @default(uuid())
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
   content    String
-  isCorrect  Boolean  @default(false)
+  isCorrect  Boolean   @default(false)
   url        String
-  question   Question @relation(fields: [questionId], references: [id])
+  questionId String?
+  question   Question? @relation(fields: [questionId], references: [id])
 }
 
 model User {
   id        String   @id @default(uuid())
   email     String   @unique
   password  String
-  name      String?
-  roles     String
-  isActive  Boolean
+  name      String
+  roles     Roles[] 
+  isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  userId       String? @unique
+  lastUpdateBy User?   @relation(name: "lastUpdateByUser", fields: [userId], references: [id])
+  UpdateBy     User[]  @relation(name: "lastUpdateByUser")
+
+  @@index([email])
 }
