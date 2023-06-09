@@ -78,7 +78,6 @@ export class UserService {
     }
   
     async findOneById( id: string ) {
-    async findOneById( id: string ) {
       try {
         return await this.data.user.findUnique({where: { id }});
       } catch (error) {
