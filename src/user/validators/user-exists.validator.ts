@@ -19,7 +19,7 @@ export class UserExistsValidator implements ValidatorConstraintInterface {
      * Method should return true, if name is not taken.
      */
     async validate(name: string, args: ValidationArguments) {
-        const result = await this.data.user.findUnique({
+        const result = await this.data.user.findFirst({
             where: { name },
             select: { id: true },
         });

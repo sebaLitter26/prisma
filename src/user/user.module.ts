@@ -4,6 +4,6 @@ import { UserResolver } from './user.resolver';
 import { UserExistsValidator } from './validators/user-exists.validator';
 
 @Module({
-  providers: [UserResolver, UserService, UserExistsValidator]
+    providers: [UserResolver, UserService, UserExistsValidator]
 })
 export class UserModule {}

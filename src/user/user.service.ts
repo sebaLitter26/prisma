@@ -1,16 +1,15 @@
 import { BadRequestException, Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
 const bcrypt = require('bcryptjs');
-import { Roles } from "@prisma/client";
-
 
 import { User } from './model/user';
 
 import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
-//import { ValidRoles } from './../auth/enums/valid-roles.enum';
 
 import { SignupInput } from './../auth/dto/inputs/signup.input';
 import { PrismaService } from '../core/prisma/prisma.service';
+import { ValidRoles } from 'src/auth/enums/valid-roles.enum';
+import { Roles } from '@prisma/client';
 
 @Injectable()
 export class UserService {
@@ -20,7 +19,7 @@ export class UserService {
     constructor(private readonly data: PrismaService) {}
   
   
-    async create( signupInput: SignupInput ) {
+
     async create( signupInput: SignupInput ) {
       
       try {
@@ -54,7 +53,7 @@ export class UserService {
 
       return this.data.user.findMany({
         where: {
-            roles: { in: ['superUser', 'admin']}
+            roles: { hasSome: [Roles.superUser,Roles.admin]}
         }
       });
       /* return this.data.user.createQueryBuilder()
@@ -87,18 +86,15 @@ export class UserService {
   
     async update(
       id: string, 
-      updateUserInput: UpdateUserDTO,
+      updateUserInput: UpdateUserInput,
       updateBy: User
     ) {
   
       try {
-        return await this.data.user.upsert({
-            create: {
+        return await this.data.user.update({
+            data: {
                 ...updateUserInput,
-                id
-            },
-            update: {
-                ...updateUserInput,
+                userId: updateBy.id,
                 id
             },
             where: { id }
@@ -113,18 +109,18 @@ export class UserService {
     }
   
     async block( id: string, adminUser: User ) {
-    async block( id: string, adminUser: User ) {
       
       const userToBlock = await this.data.user.findUnique({where: {id} });
   
       userToBlock.isActive = false;
-      userToBlock.lastUpdateBy = adminUser;
+      //userToBlock.lastUpdateBy = { connect: adminUser } ;
+      userToBlock.userId = adminUser.id;
   
       return await this.data.user.create( { data:{...userToBlock}} );
   
       }
   
-    }
+    
     private handleDBErrors( error: any ): never {
   
       

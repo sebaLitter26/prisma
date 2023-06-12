@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "postgres"
   url      = env("DATABASE_URL")
 }
 
@@ -49,7 +49,7 @@ model User {
   email     String   @unique
   password  String
   name      String
-  roles     Roles[] 
+  roles     Roles[]  @default([user])
   isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

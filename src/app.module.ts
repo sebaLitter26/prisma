@@ -16,8 +16,9 @@ import { UserModule } from './user/user.module';
     CategoryModule,
     QuizModule,
     CommonModule,
-    AuthModule,
     UserModule,
+    AuthModule,
+    
   ],
 })
 export class AppModule {}

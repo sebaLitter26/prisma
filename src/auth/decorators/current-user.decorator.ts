@@ -1,12 +1,13 @@
 import { createParamDecorator, ExecutionContext, ForbiddenException, InternalServerErrorException } from '@nestjs/common';
 import { GqlExecutionContext } from '@nestjs/graphql';
 import { User } from '../../user/model/user';
-import { ValidRoles } from '../enums/valid-roles.enum';
+//import { ValidRoles } from '../enums/valid-roles.enum';
+import { Roles } from '@prisma/client';
 
 
 
 export const CurrentUser = createParamDecorator( 
-    ( roles: ValidRoles[] = [], context: ExecutionContext  ) => {
+    ( roles: Roles[] = [], context: ExecutionContext  ) => {
 
 
         const ctx = GqlExecutionContext.create( context );
@@ -20,7 +21,7 @@ export const CurrentUser = createParamDecorator(
 
         for ( const role of user.roles ) {
             // TODO: Eliminar Valid Roles
-            if ( roles.includes( role as ValidRoles ) ) {
+            if ( roles.includes( role as Roles ) ) {
                 return user;
             }
         }

@@ -63,6 +63,29 @@ type QuizResult {
   metadata: Metadata
 }
 
+type User {
+  id: ID!
+  name: String!
+  email: String!
+
+  """Roles del Usuario"""
+  roles: [Roles!]!
+  isActive: Boolean
+  userId: String!
+}
+
+"""Roles validos para el usuario (admin, user, superUser). """
+enum Roles {
+  admin
+  user
+  superUser
+}
+
+type AuthResponse {
+  token: String!
+  user: User!
+}
+
 type Query {
   questions: [Question!]!
   question(id: String!): Question!
@@ -72,6 +95,8 @@ type Query {
   category(id: String!): Category!
   quiz(input: QuizDTO!): Quiz!
   doQuiz(input: CheckAnswerDTO!): QuizResult!
+  user(id: ID!): User!
+  revalite: AuthResponse!
 }
 
 input QuizDTO {
@@ -93,6 +118,11 @@ type Mutation {
   createCategory(input: CreateCategoryDTO!): Category!
   updateCategory(input: CreateCategoryDTO!): Category!
   deleteCategory(id: String!): Category!
+  createUser(createUserInput: CreateUserInput!): User!
+  updateUser(updateUserInput: UpdateUserInput!): User!
+  blockUser(id: ID!): User!
+  signup(signupInput: SignupInput!): AuthResponse!
+  login(loginInput: LoginInput!): AuthResponse!
 }
 
 input CreateQuestionDTO {
@@ -125,11 +155,29 @@ input CreateCategoryDTO {
   name: String
 }
 
-type User {
-  id: ID
-  createdAt: DateTime
-  updatedAt: DateTime
+input CreateUserInput {
+  email: String!
+  name: String!
+  password: String!
+}
+
+input UpdateUserInput {
   email: String
+  name: String
   password: String
-  roles: String
+  id: ID!
+  roles: [Roles!]
+  isActive: Boolean
+  userId: String
+}
+
+input SignupInput {
+  email: String!
+  name: String!
+  password: String!
+}
+
+input LoginInput {
+  email: String!
+  password: String!
 }

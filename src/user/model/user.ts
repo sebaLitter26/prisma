@@ -1,7 +1,9 @@
-import { ObjectType, Field, Int, ID } from '@nestjs/graphql';
-//import { ValidRoles } from './../../auth/enums/valid-roles.enum';
+import { ObjectType, Field, Int, ID, HideField, registerEnumType } from '@nestjs/graphql';
 import { Roles } from "@prisma/client";
 import { IsEnum } from 'class-validator';
+import { ValidRoles } from 'src/auth/enums/valid-roles.enum';
+
+registerEnumType( Roles, { name: 'Roles', description: 'Roles validos para el usuario (admin, user, superUser). ' } )
 
 @ObjectType()
 export class User {
@@ -24,6 +26,9 @@ export class User {
 
   @Field( () => Boolean, { nullable: true } )
   isActive: boolean;
+
+  @Field( () => String )
+  userId?: string;
   
   //TODO: relaciones
   //@ManyToOne( () => User, (user) => user.lastUpdateBy, { nullable: true, lazy: true })

@@ -1,16 +1,18 @@
-import { CreateUserDTO } from './create-user.input';
+import { CreateUserInput } from './create-user.input';
 import { InputType, Field, Int, PartialType, ID } from '@nestjs/graphql';
+import { Roles } from '@prisma/client';
 import { IsArray, IsBoolean, IsOptional, IsUUID } from 'class-validator';
-import { Roles } from "@prisma/client";
+import { ValidRoles } from 'src/auth/enums/valid-roles.enum';
+
 
 @InputType()
-export class UpdateUserDTO extends PartialType(CreateUserDTO) {
+export class UpdateUserInput extends PartialType(CreateUserInput) {
   
         @Field(() => ID)
         @IsUUID()
         id: string;
       
-        @Field( () => [String], { nullable: true })
+        @Field( () => [Roles], { nullable: true })
         @IsArray()
         @IsOptional()
         roles: Roles[];
@@ -20,7 +22,7 @@ export class UpdateUserDTO extends PartialType(CreateUserDTO) {
         @IsOptional()
         isActive?: boolean;
 
-        /* @Field( () => User, { nullable: true })
+        @Field( () => String, { nullable: true })
         @IsOptional()
-        lastUpdateBy?: User */
+        userId?: String
 }
