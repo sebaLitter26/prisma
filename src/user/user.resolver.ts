@@ -8,7 +8,7 @@ import { ValidRolesArgs } from './dto/args/roles.arg';
 import { ValidRoles } from '../auth/enums/valid-roles.enum';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
-import { Roles } from '@prisma/client';
+import { Roles, User as UserSchema } from '@prisma/client';
 
 @Resolver(() => User)
 @UseGuards( JwtAuthGuard )
@@ -16,7 +16,7 @@ export class UserResolver {
   constructor(private readonly userService: UserService) {}
 
   @Mutation(() => User)
-  createUser(@Args('createUserInput') createUserInput: CreateUserInput) {
+  async createUser(@Args('createUserInput') createUserInput: CreateUserInput) {
     return this.userService.create(createUserInput);
   }
 
@@ -24,16 +24,16 @@ export class UserResolver {
   async findAll(
     @Args() validRoles: ValidRolesArgs,
     @CurrentUser([Roles.admin, Roles.superUser ]) user: User
-  ):Promise<User[]> {
+  ):Promise<UserSchema[]> {
 
     return this.userService.findAll( validRoles.roles );
   }
 
   @Query(() => User, { name: 'user' })
-  findOne( 
+  async findOne( 
     @Args('id', { type: () => ID }, ParseUUIDPipe ) id: string,
     @CurrentUser([Roles.admin, Roles.superUser ]) user: User
-  ): Promise<User> {
+  ): Promise<UserSchema | null> {
     
     return this.userService.findOneById(id);
   }
@@ -41,17 +41,17 @@ export class UserResolver {
   @Mutation(() => User)
   async updateUser(
     @Args('updateUserInput') updateUserInput: UpdateUserInput,
-    @CurrentUser([Roles.admin ]) user: User
-  ): Promise<User> {
+    @CurrentUser([Roles.admin ]) user: UserSchema
+  ): Promise<UserSchema> {
     return this.userService.update(updateUserInput.id, updateUserInput, user );
   }
 
   @Mutation(() => User, { name: 'blockUser' })
-  blockUser( 
+  async blockUser( 
     @Args('id', { type: () => ID }, ParseUUIDPipe ) id: string,
-    @CurrentUser([ Roles.admin ]) user: User
-  ): Promise<User> {
-    return this.userService.block(id, user );
+    @CurrentUser([ Roles.admin ]) user: UserSchema
+  ): Promise<UserSchema | undefined> {
+    return await this.userService.block(id, user );
   }
 
   /* @Mutation(() => User)

@@ -7,6 +7,10 @@ import { QuizModule } from './quiz/quiz.module';
 import { CommonModule } from './common/common.module';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
+import { AppartmentModule } from './appartment/appartment.module';
+import { BuildingModule } from './building/building.module';
+import { OwnerModule } from './owner/owner.module';
+import { TenantModule } from './tenant/tenant.module';
 
 @Module({
   imports: [
@@ -18,6 +22,10 @@ import { UserModule } from './user/user.module';
     CommonModule,
     UserModule,
     AuthModule,
+    AppartmentModule,
+    BuildingModule,
+    OwnerModule,
+    TenantModule
     
   ],
 })

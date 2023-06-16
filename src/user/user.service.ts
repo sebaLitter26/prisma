@@ -1,15 +1,15 @@
 import { BadRequestException, Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
 const bcrypt = require('bcryptjs');
 
-import { User } from './model/user';
+//import { User } from './model/user';
 
 import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
 
 import { SignupInput } from './../auth/dto/inputs/signup.input';
 import { PrismaService } from '../core/prisma/prisma.service';
-import { ValidRoles } from 'src/auth/enums/valid-roles.enum';
-import { Roles } from '@prisma/client';
+//import { ValidRoles } from 'src/auth/enums/valid-roles.enum';
+import { Roles, User } from '@prisma/client';
 
 @Injectable()
 export class UserService {
@@ -110,15 +110,31 @@ export class UserService {
   
     async block( id: string, adminUser: User ) {
       
-      const userToBlock = await this.data.user.findUnique({where: {id} });
-  
-      userToBlock.isActive = false;
-      //userToBlock.lastUpdateBy = { connect: adminUser } ;
-      userToBlock.userId = adminUser.id;
-  
-      return await this.data.user.create( { data:{...userToBlock}} );
-  
+
+      try {
+        const userToBlock = await this.data.user.findUnique({where: { id }});
+
+        if(userToBlock) {
+          userToBlock.isActive = false;
+          //userToBlock.lastUpdateBy = { connect: adminUser } ;
+          userToBlock.userId = adminUser.id;
+          try{
+            return await this.data.user.create( { 
+              data: {
+                ...userToBlock,
+                //lastUpdateBy :   {connect: {userId: adminUser.id }}
+              }
+            });
+          } catch (error) {
+            this.handleDBErrors( error );
+          }
+        }
+      } catch (error) {
+        throw new NotFoundException(`${ id } not found`);
       }
+      
+  
+    }
   
     
     private handleDBErrors( error: any ): never {

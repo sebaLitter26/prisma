@@ -72,6 +72,9 @@ type User {
   roles: [Roles!]!
   isActive: Boolean
   userId: String!
+
+  """lastUpdateBy"""
+  lastUpdateBy: User
 }
 
 """Roles validos para el usuario (admin, user, superUser). """
@@ -86,6 +89,47 @@ type AuthResponse {
   user: User!
 }
 
+type Owner {
+  id: ID
+  createdAt: DateTime
+  updatedAt: DateTime
+  content: String
+  appartments: [Appartment!]
+  user: User
+  userId: String
+}
+
+type Tenant {
+  id: ID
+  createdAt: DateTime
+  updatedAt: DateTime
+  content: String
+  appartment: [Appartment!]
+  user: User
+  userId: String
+}
+
+type Building {
+  id: ID
+  createdAt: DateTime
+  updatedAt: DateTime
+  address: String
+  appartments: [Appartment!]!
+}
+
+type Appartment {
+  id: ID
+  createdAt: DateTime
+  updatedAt: DateTime
+  content: String
+  owner: Owner
+  ownerId: String
+  tenant: Tenant
+  tenantId: String
+  building: Building
+  buildingId: String
+}
+
 type Query {
   questions: [Question!]!
   question(id: String!): Question!
@@ -97,6 +141,14 @@ type Query {
   doQuiz(input: CheckAnswerDTO!): QuizResult!
   user(id: ID!): User!
   revalite: AuthResponse!
+  Appartments: [Appartment!]!
+  Appartment(id: String!): Appartment!
+  buildings: [Building!]!
+  building(id: String!): Building!
+  Owners: [Owner!]!
+  Owner(id: String!): Owner!
+  tenants: [Tenant!]!
+  tenant(id: String!): Tenant!
 }
 
 input QuizDTO {
@@ -123,6 +175,18 @@ type Mutation {
   blockUser(id: ID!): User!
   signup(signupInput: SignupInput!): AuthResponse!
   login(loginInput: LoginInput!): AuthResponse!
+  createAppartment(input: CreateAppartmentDTO!): Appartment!
+  updateAppartment(input: UpdateAppartmentDTO!): Appartment!
+  deleteAppartment(id: String!): Appartment!
+  createBuilding(input: CreateBuildingDTO!): Building!
+  updateBuilding(input: CreateBuildingDTO!): Building!
+  deleteBuilding(id: String!): Building!
+  createOwner(input: CreateOwnerDTO!): Owner!
+  updateOwner(input: UpdateOwnerDTO!): Owner!
+  deleteOwner(id: String!): Owner!
+  createTenant(input: CreateTenantDTO!): Tenant!
+  updateTenant(input: UpdateTenantDTO!): Tenant!
+  deleteTenant(id: String!): Tenant!
 }
 
 input CreateQuestionDTO {
@@ -180,4 +244,41 @@ input SignupInput {
 input LoginInput {
   email: String!
   password: String!
+}
+
+input CreateAppartmentDTO {
+  content: String!
+  buildingId: String!
+}
+
+input UpdateAppartmentDTO {
+  content: String
+  buildingId: String
+  id: String!
+}
+
+input CreateBuildingDTO {
+  address: String
+}
+
+input CreateOwnerDTO {
+  content: String!
+  appartmentId: String!
+}
+
+input UpdateOwnerDTO {
+  content: String
+  appartmentId: String
+  id: String!
+}
+
+input CreateTenantDTO {
+  content: String!
+  userId: String!
+}
+
+input UpdateTenantDTO {
+  content: String
+  userId: String
+  id: String!
 }
