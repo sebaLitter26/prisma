@@ -1,3 +1,6 @@
+// https://dbdiagram.io/d/62411640bed618387309ee20
+
+
 import { Module } from '@nestjs/common';
 import { CoreModule } from './core/core.module';
 import { QuestionModule } from './question/question.module';

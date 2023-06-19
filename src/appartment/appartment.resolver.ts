@@ -1,8 +1,8 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
-import { CreateAppartmentDTO } from './dto/create-Appartment.dto';
-import { UpdateAppartmentDTO } from './dto/update-Appartment.dto';
+import { CreateAppartmentDTO } from './dto/create-appartment.dto';
+import { UpdateAppartmentDTO } from './dto/update-appartment.dto';
 import { Appartment } from './model/appartment';
-import { AppartmentService } from './Appartment.service';
+import { AppartmentService } from './appartment.service';
 
 @Resolver(() => Appartment)
 export class AppartmentResolver {

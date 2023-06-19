@@ -81,7 +81,7 @@ model Appartment {
   content      String
   appartmentId String?
   building     Building? @relation(fields: [appartmentId], references: [id])
-  tenantId     String?
+  tenantId     String?   @unique
   tenant       Tenant?   @relation(fields: [tenantId], references: [id])
   ownerId      String?
   owner        Owner?    @relation(fields: [ownerId], references: [id])
@@ -95,7 +95,7 @@ model Tenant {
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
   content     String
-  appartments Appartment[]
+  appartments Appartment?
   userId      String?      @unique
   user        User?        @relation(fields: [userId], references: [id])
 }

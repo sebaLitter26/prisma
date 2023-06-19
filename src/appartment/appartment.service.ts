@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/core/prisma/prisma.service';
-import { CreateAppartmentDTO } from './dto/create-Appartment.dto';
-import { UpdateAppartmentDTO } from './dto/update-Appartment.dto';
+import { CreateAppartmentDTO } from './dto/create-appartment.dto';
+import { UpdateAppartmentDTO } from './dto/update-appartment.dto';
 
 @Injectable()
 export class AppartmentService {
@@ -36,6 +36,6 @@ export class AppartmentService {
   }
 
   async delete(id: string) {
-    return await this.data.Appartment.delete({ where: { id } });
+    return await this.data.appartment.delete({ where: { id } });
   }
 }

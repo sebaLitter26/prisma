@@ -9,21 +9,21 @@ export class BuildingService {
 
   async getMany() {
     return await this.data.building.findMany({
-      include: { appartments: { include: { appartments: true } } },
+      include: { appartments: true },
     });
   }
 
   async get(id: string) {
     return await this.data.building.findUnique({
       where: { id },
-      include: { appartments: { include: { appartments: true } } },
+      include: { appartments: true },
     });
   }
 
   async create(data: CreateBuildingDTO) {
     return await this.data.building.create({
       data,
-      include: { appartments: { include: { appartments: true } } },
+      include: { appartments: true },
     });
   }
 
@@ -31,7 +31,7 @@ export class BuildingService {
     return await this.data.building.update({
       where: { id: data.id },
       data,
-      include: { appartments: { include: { appartments: true } } },
+      include: { appartments:  true  },
     });
   }
 
