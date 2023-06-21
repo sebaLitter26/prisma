@@ -8,11 +8,11 @@ import { JwtStrategy } from './strategies/jwt.strategy';
 import { AuthService } from './auth.service';
 import { AuthResolver } from './auth.resolver';
 
-import { UserModule } from './../user/user.module';
-import { UserService } from 'src/user/user.service';
+/* import { UserModule } from './../user/user.module';
+import { UserService } from '../user/user.service'; */
 
 @Module({
-  providers: [ AuthResolver, AuthService, JwtStrategy, UserService ],
+  providers: [ AuthResolver, AuthService, JwtStrategy ],
   exports: [ JwtStrategy, PassportModule, JwtModule ],
   imports: [
 
@@ -26,7 +26,7 @@ import { UserService } from 'src/user/user.service';
       useFactory: ( configService: ConfigService ) => ({
           secret: configService.get('JWT_SECRET'),
           signOptions: {
-            expiresIn: '4h'
+            expiresIn: configService.get('JWT_EXPIRE'),
           }
         })
     }),

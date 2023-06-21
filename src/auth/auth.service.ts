@@ -1,4 +1,4 @@
-import { Injectable, BadRequestException, UnauthorizedException } from '@nestjs/common';
+import { Injectable, BadRequestException, UnauthorizedException, NotFoundException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 
 import * as bcrypt from 'bcrypt';
@@ -7,12 +7,17 @@ import { SignupInput, LoginInput } from './dto/inputs';
 import { AuthResponse } from './types/auth-response.type';
 import { User } from '../user/model/user';
 import { UserService } from './../user/user.service';
+import { PublicErrors } from '../common/dto/enums/public-errors.enum';
+import { PrismaService } from '../core/prisma/prisma.service';
+import { ConfigService } from '@nestjs/config';
+
 
 @Injectable()
 export class AuthService {
 
     constructor(
-        private readonly userService: UserService,
+        private readonly configService: ConfigService,
+        private readonly prisma: PrismaService,
         private readonly jwtService: JwtService,
     ) {}
 
@@ -23,7 +28,11 @@ export class AuthService {
 
     async signup( signupInput: SignupInput ): Promise<AuthResponse> {
 
-        const user = await this.userService.create( signupInput );
+        
+
+        const user = await this.prisma.user.create( {
+            data: signupInput
+        } );
 
         const token = this.getJwtToken( user.id );
 
@@ -34,16 +43,31 @@ export class AuthService {
     async login( loginInput: LoginInput ): Promise<AuthResponse> {
         
         const { email, password } = loginInput;
-        const user = await this.userService.findOneByEmail( email );
+        const user = await this.prisma.user.findUnique({ where: { email} });
 
-        if ( !bcrypt.compareSync( password, user.password ) ) {
-            throw new BadRequestException('Email / Password do not match');
+        if (!user) {
+            throw new NotFoundException({
+              code: PublicErrors.INVALID_CREDENTIALS,
+              message: `Invalid credentials`,
+            });
         }
 
-        const token = this.getJwtToken( user.id );
+        //valid password
+        if ( !bcrypt.compareSync( password, user.password ) ) {
+            throw new BadRequestException({
+                code: PublicErrors.INVALID_CREDENTIALS,
+                message: `Invalid credentials. Email / Password do not match`,
+            });
+        }
+
+        const tokens = this.generateTokens({
+            userId: user.id,
+          });
+
+        //const token = this.getJwtToken( user.id );
 
         return {
-            token,
+            ...tokens,
             user
         }
     }
@@ -51,23 +75,65 @@ export class AuthService {
 
     async validateUser( id: string ): Promise<User> {
 
-        const user = await this.userService.findOneById( id );
+        const user = await this.prisma.user.findUnique({ where: { id} });
 
-        if ( !user.isActive )
+        if (!user || !user.isActive )
             throw new UnauthorizedException(`User is inactive, talk with an admin`);
-
+        else
+        // @ts-expect-error si ocurre un error va a ser ignorado.
         delete user.password;
 
         return user;
     }
 
 
-    revalidateToken( user: User ): AuthResponse {
+    /* revalidateToken( user: User ): AuthResponse {
 
         const token = this.getJwtToken( user.id );
 
         return { token, user };
 
+    } */
+
+    async refreshToken(token: string): Promise<AuthResponse> {
+        try {
+          const { userId } = this.jwtService.verify(token, {
+            secret: this.configService.get('JWT_SECRET'),
+          });
+    
+          return this.generateTokens({
+            userId,
+          });
+        } catch (e) {
+          throw new UnauthorizedException();
+        }
+    }
+
+    generateTokens(payload: { userId: string }): AuthResponse {
+        return {
+          accessToken: this.generateAccessToken(payload),
+          refreshToken: this.generateRefreshToken(payload),
+        };
+    }
+
+    private generateAccessToken(payload: { userId: string }): string {
+        return this.jwtService.sign(payload);
+    }
+    
+    private generateRefreshToken(payload: { userId: string }): string {
+        return this.jwtService.sign(payload, {
+          secret: this.configService.get('JWT_SECRET'),
+          expiresIn: this.configService.get('JWT_EXPIRE'),
+        });
+    }
+
+    getUser(userId: string): Promise<User> {
+        return this.prisma.user.findUnique({ where: { id: userId } });
+    }
+
+    getUserFromToken(token: string): Promise<User> {
+        const id = this.jwtService.decode(token)['userId'];
+        return this.getUser(id);
     }
 
 }

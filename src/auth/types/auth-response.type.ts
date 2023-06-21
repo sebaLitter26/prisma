@@ -4,10 +4,13 @@ import { User } from '../../user/model/user';
 @ObjectType()
 export class AuthResponse {
 
-    @Field( () => String )
-    token: string;
+    @Field({ description: 'JWT access token' })
+    accessToken: string;
 
-    @Field( () => User )
-    user: User;
+    @Field({ description: 'JWT refresh token' })
+    refreshToken: string;
+
+    @Field({ description: 'User' })
+    user?: User;
 
 }
