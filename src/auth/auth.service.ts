@@ -10,6 +10,7 @@ import { UserService } from './../user/user.service';
 import { PublicErrors } from '../common/dto/enums/public-errors.enum';
 import { PrismaService } from '../core/prisma/prisma.service';
 import { ConfigService } from '@nestjs/config';
+//import { User } from '@prisma/client';
 
 
 @Injectable()
@@ -21,29 +22,34 @@ export class AuthService {
         private readonly jwtService: JwtService,
     ) {}
 
-    private getJwtToken( userId: string ) {
+    /* private getJwtToken( userId: string ) {
         return this.jwtService.sign({ id: userId });
-    }
+    } */
 
 
     async signup( signupInput: SignupInput ): Promise<AuthResponse> {
-
-        
 
         const user = await this.prisma.user.create( {
             data: signupInput
         } );
 
-        const token = this.getJwtToken( user.id );
+        
 
-        return { token, user };
+        //const token = this.getJwtToken( user.id );
+
+        const tokens = this.generateTokens({
+            userId: user.id,
+        });
+
+        return { ...tokens, user };
     }
 
 
     async login( loginInput: LoginInput ): Promise<AuthResponse> {
         
         const { email, password } = loginInput;
-        const user = await this.prisma.user.findUnique({ where: { email} });
+
+        const user = await this.prisma.user.findUnique({ where: { email, } });
 
         if (!user) {
             throw new NotFoundException({
@@ -62,13 +68,15 @@ export class AuthService {
 
         const tokens = this.generateTokens({
             userId: user.id,
-          });
+        });
+
+        
 
         //const token = this.getJwtToken( user.id );
 
         return {
             ...tokens,
-            user
+            //user
         }
     }
 
@@ -79,9 +87,8 @@ export class AuthService {
 
         if (!user || !user.isActive )
             throw new UnauthorizedException(`User is inactive, talk with an admin`);
-        else
-        // @ts-expect-error si ocurre un error va a ser ignorado.
-        delete user.password;
+        /* else if(user && user.password)
+            delete user.password; */
 
         return user;
     }
@@ -127,13 +134,29 @@ export class AuthService {
         });
     }
 
-    getUser(userId: string): Promise<User> {
-        return this.prisma.user.findUnique({ where: { id: userId } });
+    async getUser( id: string): Promise<User> {
+        const user = await this.prisma.user.findUnique({ where: { id } });
+
+        if (!user) {
+            throw new NotFoundException({
+              code: PublicErrors.INVALID_CREDENTIALS,
+              message: `Invalid credentials`,
+            });
+        }
+        return user;
     }
 
     getUserFromToken(token: string): Promise<User> {
-        const id = this.jwtService.decode(token)['userId'];
-        return this.getUser(id);
+
+        const user = this.jwtService.decode(token);
+
+        if (!token || !user) {
+            throw new NotFoundException({
+              code: PublicErrors.INVALID_CREDENTIALS,
+              message: `Invalid credentials. User not Found`,
+            });
+        }
+        return this.getUser(user['userId']) ;
     }
 
 }

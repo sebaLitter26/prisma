@@ -1,4 +1,5 @@
 import { Field, ObjectType } from '@nestjs/graphql';
+//import { User } from '@prisma/client';
 import { User } from '../../user/model/user';
 
 @ObjectType()

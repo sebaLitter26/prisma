@@ -75,6 +75,8 @@ type User {
 
   """lastUpdateBy"""
   lastUpdateBy: User
+  createdAt: String!
+  updatedAt: String!
 }
 
 """Roles validos para el usuario (admin, user, superUser). """
@@ -85,7 +87,13 @@ enum Roles {
 }
 
 type AuthResponse {
-  token: String!
+  """JWT access token"""
+  accessToken: String!
+
+  """JWT refresh token"""
+  refreshToken: String!
+
+  """User"""
   user: User!
 }
 
@@ -140,7 +148,7 @@ type Query {
   quiz(input: QuizDTO!): Quiz!
   doQuiz(input: CheckAnswerDTO!): QuizResult!
   user(id: ID!): User!
-  revalite: AuthResponse!
+  revalidate: AuthResponse!
   Appartments: [Appartment!]!
   Appartment(id: String!): Appartment!
   buildings: [Building!]!

@@ -32,18 +32,18 @@ export class AuthResolver {
     return this.authService.login( loginInput );
   }
 
-  @Query( () => AuthResponse, { name: 'revalite'})
+  @Query( () => AuthResponse, { name: 'revalidate'})
   @UseGuards( JwtAuthGuard )
-  revalidateToken(
+  async revalidateToken(
     @Args() { token }: RefreshTokenInput,
     @CurrentUser( /**[ ValidRoles.admin ] */  ) user: User
-  ): AuthResponse {
+  ): Promise<AuthResponse> {
     return this.authService.refreshToken( token );
   }
 
-  @ResolveField('user')
-  async user(@Parent() auth: Auth) {
-    return await this.authService.getUserFromToken(auth.accessToken);
+  @ResolveField('user', returns => User)
+  async user(@Parent() auth: AuthResponse ) { 
+    return this.authService.getUserFromToken(auth.accessToken);
   }
 
 }
