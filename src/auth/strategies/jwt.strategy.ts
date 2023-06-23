@@ -6,6 +6,7 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { User } from '../../user/model/user';
 import { JwtPayload } from '../intefaces/jwt-payload.interface';
 import { AuthService } from '../auth.service';
+//import { User } from '@prisma/client';
 
 
 @Injectable()
@@ -29,7 +30,7 @@ export class JwtStrategy extends PassportStrategy( Strategy ) {
         
         const user = await this.authService.validateUser( id );
 
-        return user; // req.user
+        return user ; // req.user
 
     }
 

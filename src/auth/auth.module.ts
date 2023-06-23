@@ -26,7 +26,7 @@ import { UserService } from '../user/user.service'; */
       useFactory: ( configService: ConfigService ) => ({
           secret: configService.get('JWT_SECRET'),
           signOptions: {
-            expiresIn: configService.get('JWT_EXPIRE'),
+            expiresIn: '1h',
           }
         })
     }),

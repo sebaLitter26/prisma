@@ -18,7 +18,7 @@ export class User {
   email: string;
 
   @HideField()
-  password?: string;
+  password: string;
 
   @IsEnum(Roles)
   @Field( () => [Roles], { description: 'Roles del Usuario'  } )
@@ -33,6 +33,18 @@ export class User {
   //TODO: relaciones
   //@ManyToOne( () => User, (user) => user.lastUpdateBy, { nullable: true, lazy: true })
   //@JoinColumn({ name: 'lastUpdateBy' })
-  @Field( () => User, { nullable: true, description: 'lastUpdateBy' })
+  /* @Field( () => User, { nullable: true, description: 'lastUpdateBy' })
+  lastUpdateBy?: User; */
+
+  @Field( () => User , { nullable: true, description: 'lastUpdateBy' })
   lastUpdateBy?: User;
+
+  @Field( () => String )
+  createdAt?: Date;
+
+  @Field( () => String )
+  updatedAt?: Date;
+
+
+
 }
