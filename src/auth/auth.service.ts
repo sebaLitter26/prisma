@@ -5,12 +5,12 @@ import * as bcrypt from 'bcrypt';
 
 import { SignupInput, LoginInput } from './dto/inputs';
 import { AuthResponse } from './types/auth-response.type';
-import { User } from '../user/model/user';
+//import { User } from '../user/model/user';
 import { UserService } from './../user/user.service';
 import { PublicErrors } from '../common/dto/enums/public-errors.enum';
 import { PrismaService } from '../core/prisma/prisma.service';
 import { ConfigService } from '@nestjs/config';
-//import { User } from '@prisma/client';
+import { User } from '@prisma/client';
 
 
 @Injectable()
@@ -32,8 +32,6 @@ export class AuthService {
         const user = await this.prisma.user.create( {
             data: signupInput
         } );
-
-        
 
         //const token = this.getJwtToken( user.id );
 

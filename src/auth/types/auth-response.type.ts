@@ -1,5 +1,5 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-//import { User } from '@prisma/client';
+import { User as UserSchema } from '@prisma/client';
 import { User } from '../../user/model/user';
 
 @ObjectType()
@@ -11,7 +11,7 @@ export class AuthResponse {
     @Field({ description: 'JWT refresh token' })
     refreshToken: string;
 
-    @Field({ description: 'User' })
-    user?: User;
+    @Field( () => User,{ description: 'User' })
+    user?: UserSchema;
 
 }

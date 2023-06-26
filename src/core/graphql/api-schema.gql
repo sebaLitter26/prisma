@@ -75,6 +75,9 @@ type User {
 
   """lastUpdateBy"""
   lastUpdateBy: User
+
+  """updateBy"""
+  updateBy: [User!]
   createdAt: String!
   updatedAt: String!
 }

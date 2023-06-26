@@ -108,7 +108,7 @@ export class UserService {
       
     }
   
-    async block( id: string, adminUser: User ) {
+    async block( id: string, adminUser: User ): Promise<User | undefined> {
       
 
       try {
