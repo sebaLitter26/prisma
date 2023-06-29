@@ -31,6 +31,14 @@ export class AuthService {
             data: signupInput
         } );
 
+        if(!user){
+            throw new BadRequestException({
+                code: PublicErrors.INVALID_CREDENTIALS,
+                message: `Invalid credentials. Email / Password do not match`,
+            });
+        }
+
+
         //const token = this.getJwtToken( user.id );
 
         const tokens = this.generateTokens({
