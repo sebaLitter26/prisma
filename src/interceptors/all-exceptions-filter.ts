@@ -24,7 +24,8 @@ import {
      *
      * Error codes definition for Prisma Client (Query Engine)
      * @see https://www.prisma.io/docs/reference/api-reference/error-reference#prisma-client-query-engine
-     */
+     * @see https://docs.paloaltonetworks.com/saas-security/saas-security-admin/saas-security-api/syslog-and-api-integration/api-client-integration/public-api-references/http-request-methods-and-status-codes
+    */
     private errorCodesStatusMapping: ErrorCodesStatusMapping = {
 
     //Common
