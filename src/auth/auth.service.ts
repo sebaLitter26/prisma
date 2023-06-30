@@ -8,7 +8,7 @@ import { AuthResponse } from './types/auth-response.type';
 import { PrismaService } from '../core/prisma/prisma.service';
 import { ConfigService } from '@nestjs/config';
 import { User } from '@prisma/client';
-import { PublicErrors } from 'src/public-errors.enum';
+import { PublicErrors } from 'src/interceptors/public-errors.enum';
 
 
 @Injectable()
@@ -28,7 +28,10 @@ export class AuthService {
     async signup( signupInput: SignupInput ): Promise<AuthResponse> {
 
         const user = await this.prisma.user.create( {
-            data: signupInput
+            data: {
+                ...signupInput,
+                password: bcrypt.hashSync(signupInput.password,8)
+            }
         } );
 
         //const token = this.getJwtToken( user.id );
