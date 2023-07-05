@@ -9,6 +9,7 @@ import { PrismaService } from '../core/prisma/prisma.service';
 import { ConfigService } from '@nestjs/config';
 import { User } from '@prisma/client';
 import { PublicErrors } from 'src/interceptors/public-errors.enum';
+import { SmsService } from 'src/core/twilio-sms/sms.service';
 
 
 @Injectable()
@@ -18,6 +19,7 @@ export class AuthService {
         private readonly configService: ConfigService,
         private readonly prisma: PrismaService,
         private readonly jwtService: JwtService,
+        private readonly smsService: SmsService
     ) {}
 
     /* private getJwtToken( userId: string ) {
@@ -77,7 +79,8 @@ export class AuthService {
             userId: user.id,
         });
 
-        
+       //this.smsService.sendSMS('+54925598729', '+5491165404122', 'Te logueaste Seba!'); // 15.485 $
+       this.smsService.sendMessage(1165404122,"hola Seba");
 
         //const token = this.getJwtToken( user.id );
 

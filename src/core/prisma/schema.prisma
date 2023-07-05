@@ -79,8 +79,8 @@ model Appartment {
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
   content      String
-  appartmentId String?
-  building     Building? @relation(fields: [appartmentId], references: [id])
+  buildingId String?
+  building     Building? @relation(fields: [buildingId], references: [id])
   tenantId     String?   @unique
   tenant       Tenant?   @relation(fields: [tenantId], references: [id])
   ownerId      String?
@@ -109,4 +109,38 @@ model Owner {
   appartments Appartment[]
   userId      String?      @unique
   user        User?        @relation(fields: [userId], references: [id])
+}
+
+
+//Producto
+model Product {
+  id            String            @id @default(uuid())
+  name          String
+  photo         String
+  price         Int
+  stock         Int
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+  brand         String
+}
+
+type CartItem {
+  product Product[]
+  quantity Int
+}
+
+model Order {
+  id        String     @id @default(uuid())
+  userId    String     
+  user      User       @relation(fields: [userId], references: [id])
+  cartItems CartItem[]
+}
+
+model ProductOnOrder {
+  product   Product @relation(fields: [productId], references: [id])
+  productId String // relation scalar field (used in the `@relation` attribute above)
+  order   Order @relation(fields: [orderId], references: [id])
+  orderId String // relation scalar field (used in the `@relation` attribute above)
+  quantity Int
+  @@id([productId, orderId])
 }
