@@ -122,24 +122,19 @@ model Product {
   createdAt     DateTime          @default(now())
   updatedAt     DateTime          @updatedAt
   brand         String
+  carts         ProductOnOrder[]     @relation(name: "ProductOnOrder")
 }
 
-type CartItem {
-  product Product[]
-  quantity Int
-}
 
 model Order {
   id        String     @id @default(uuid())
-  userId    String     
-  user      User       @relation(fields: [userId], references: [id])
-  cartItems CartItem[]
+  cartItems ProductOnOrder[]    @relation(name: "ProductOnOrder")
 }
 
 model ProductOnOrder {
-  product   Product @relation(fields: [productId], references: [id])
+  product   Product @relation(name: "ProductOnOrder", fields: [productId], references: [id])
   productId String // relation scalar field (used in the `@relation` attribute above)
-  order   Order @relation(fields: [orderId], references: [id])
+  order   Order @relation(name: "ProductOnOrder",fields: [orderId], references: [id])
   orderId String // relation scalar field (used in the `@relation` attribute above)
   quantity Int
   @@id([productId, orderId])

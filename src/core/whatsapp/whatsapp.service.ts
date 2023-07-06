@@ -1,25 +1,25 @@
 import { Injectable, Scope } from '@nestjs/common';
-//import { TwilioService } from 'nestjs-twilio';
 const qrcode = require("qrcode-terminal");
 import { Client, LocalAuth } from "whatsapp-web.js";
-const fs = require('fs');
-
-
 
 @Injectable({ scope: Scope.TRANSIENT })
-export class SmsService {
-
+export class WhatsappService {
+    
   client = null;
   
 
-  public constructor(
-    //private readonly twilioService: TwilioService
-  ) {
+  public constructor() {
    
+    
+    /* {
+        clientId: "client-one" //Un identificador(Sugiero que no lo modifiques)
+   }
+   puppeteer: {
+        headless: false
+    }
+   */
     this.client = new Client({
-      authStrategy: new LocalAuth({
-           clientId: "client-one" //Un identificador(Sugiero que no lo modifiques)
-      })
+      authStrategy: new LocalAuth()
     })
 
     this.client.initialize();
@@ -35,6 +35,12 @@ export class SmsService {
     
     this.client.on("ready", () => {
       console.log("Client is ready!");
+      this.client.getChats().then(chats => {
+        console.log(chats);
+        
+        /* const myGroup = chats.find(id => id.name === "Wall-E")
+        client.sendMessage(myGroup.id._serialized, "Walle alive!") */
+    });
     });
 
     this.client.on("message", (message) => {
@@ -50,34 +56,17 @@ export class SmsService {
     
   }
 
-  async intitialize() {
-    
-  }
-
   sendMessage(number: number, text: string){
-    this.client.sendMessage( `549${number}@c.us`,text);
-    console.log(`Message sent to 549${number}`);
+    try{
+        this.client.sendMessage( `549${number}@c.us`,text)
+        .then(msg=> console.log(`Message sent to 549${number}`, msg))
+        .catch(err=> console.log(err));
+    }catch(e){
+        console.log(e);
+        
+    }
+    
+    
     
   }
-  
-
-
-
-    
-
-  /* async sendSMS(from: string, to: string, body: string) {
-    return await this.twilioService.client.messages.create(
-      {
-        body,
-        from,
-        to,
-      },
-      function (err, data) {
-        if (err) {
-          console.log('err', err);
-          console.log('data', data);
-        }
-      },
-    );
-  } */
 }

@@ -37,5 +37,4 @@ lerna-debug.log*
 !.vscode/extensions.json
 
 # Whatapp Session
-/.wwebjs_auth/
-/.wwebjs_cache/
+.wwebjs_*
