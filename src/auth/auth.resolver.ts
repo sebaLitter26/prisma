@@ -20,16 +20,17 @@ export class AuthResolver {
 
   @Mutation( () => AuthResponse , { name: 'signup' })
   async signup(
-    @Args('signupInput') signupInput: SignupInput
+    @Args({ name: 'input', type: () => SignupInput }) data: SignupInput
   ): Promise<AuthResponse> {
-    return this.authService.signup( signupInput );
+    return this.authService.signup( data );
   }
 
   @Mutation( () => AuthResponse , { name: 'login' })
   async login(
-    @Args('loginInput') loginInput: LoginInput
+    //@Args('loginInput') loginInput: LoginInput
+    @Args({ name: 'input', type: () => LoginInput }) data: LoginInput
   ): Promise<AuthResponse> {
-    return this.authService.login( loginInput );
+    return this.authService.login( data );
   }
 
   @Query( () => AuthResponse, { name: 'revalidate'})

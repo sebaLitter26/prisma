@@ -15,6 +15,15 @@ export class Building {
   @Field({ nullable: true })
   address: string;
 
+  @Field({ nullable: true })
+  location: string;
+
+  @Field({ nullable: true })
+  floors: number;
+
+  @Field({ nullable: true })
+  letter: string;
+
   @Field(() => [Appartment])
   appartments: Appartment[];
 }

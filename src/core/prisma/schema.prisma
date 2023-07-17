@@ -7,12 +7,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum Roles {
-  admin
-  user
-  superUser
-}
-
 model Category {
   id        String     @id @default(uuid())
   createdAt DateTime   @default(now())
@@ -28,8 +22,8 @@ model Question {
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
   content    String
-  answers    Answer[]
   categoryId String?
+  answers    Answer[]
   category   Category? @relation(fields: [categoryId], references: [id])
 }
 
@@ -45,21 +39,19 @@ model Answer {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  password  String
-  name      String
-  roles     Roles[]  @default([user])
-  isActive  Boolean  @default(true)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  userId       String? @unique
-  lastUpdateBy User?   @relation(name: "lastUpdateByUser", fields: [userId], references: [id])
-  updateBy     User[]  @relation(name: "lastUpdateByUser")
-
-  tenant Tenant?
-  owner  Owner?
+  id           String   @id @default(uuid())
+  email        String   @unique
+  password     String
+  name         String
+  roles        Roles[]  @default([user])
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  userId       String?  @unique
+  owner        Owner?
+  tenant       Tenant?
+  lastUpdateBy User?    @relation("lastUpdateByUser", fields: [userId], references: [id])
+  updateBy     User?    @relation("lastUpdateByUser")
 
   @@index([email])
 }
@@ -69,73 +61,79 @@ model Building {
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
   address     String       @unique
+  location    String
+  floors      Int
+  letter      String       @db.Char(1)
+  prueba      String
   appartments Appartment[]
 
   @@index([address])
 }
 
 model Appartment {
-  id           String    @id @default(uuid())
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
-  content      String
+  id         String    @id @default(uuid())
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  content    String
   buildingId String?
-  building     Building? @relation(fields: [buildingId], references: [id])
-  tenantId     String?   @unique
-  tenant       Tenant?   @relation(fields: [tenantId], references: [id])
-  ownerId      String?
-  owner        Owner?    @relation(fields: [ownerId], references: [id])
+  tenantId   String?   @unique
+  ownerId    String?
+  building   Building? @relation(fields: [buildingId], references: [id])
+  owner      Owner?    @relation(fields: [ownerId], references: [id])
+  tenant     Tenant?   @relation(fields: [tenantId], references: [id])
 
   @@index([content])
 }
 
-//Inquilino
 model Tenant {
   id          String      @id @default(uuid())
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
   content     String
-  appartments Appartment?
   userId      String?     @unique
+  appartments Appartment?
   user        User?       @relation(fields: [userId], references: [id])
 }
 
-//Propietario
 model Owner {
   id          String       @id @default(uuid())
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
   content     String
-  appartments Appartment[]
   userId      String?      @unique
+  appartments Appartment[]
   user        User?        @relation(fields: [userId], references: [id])
 }
 
-
-//Producto
 model Product {
-  id            String            @id @default(uuid())
-  name          String
-  photo         String
-  price         Int
-  stock         Int
-  createdAt     DateTime          @default(now())
-  updatedAt     DateTime          @updatedAt
-  brand         String
-  carts         ProductOnOrder[]     @relation(name: "ProductOnOrder")
+  id        String           @id @default(uuid())
+  name      String
+  photo     String
+  price     Int
+  stock     Int
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+  brand     String
+  carts     ProductOnOrder[] @relation("ProductOnOrder")
 }
 
-
 model Order {
-  id        String     @id @default(uuid())
-  cartItems ProductOnOrder[]    @relation(name: "ProductOnOrder")
+  id        String           @id @default(uuid())
+  cartItems ProductOnOrder[] @relation("ProductOnOrder")
 }
 
 model ProductOnOrder {
-  product   Product @relation(name: "ProductOnOrder", fields: [productId], references: [id])
-  productId String // relation scalar field (used in the `@relation` attribute above)
-  order   Order @relation(name: "ProductOnOrder",fields: [orderId], references: [id])
-  orderId String // relation scalar field (used in the `@relation` attribute above)
-  quantity Int
+  productId String
+  orderId   String
+  quantity  Int
+  order     Order   @relation("ProductOnOrder", fields: [orderId], references: [id])
+  product   Product @relation("ProductOnOrder", fields: [productId], references: [id])
+
   @@id([productId, orderId])
+}
+
+enum Roles {
+  admin
+  user
+  superUser
 }

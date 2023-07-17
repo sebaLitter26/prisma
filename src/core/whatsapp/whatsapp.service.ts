@@ -5,7 +5,7 @@ import { Client, LocalAuth } from "whatsapp-web.js";
 @Injectable({ scope: Scope.TRANSIENT })
 export class WhatsappService {
     
-  client = null;
+  client;
   
 
   public constructor() {
@@ -35,12 +35,13 @@ export class WhatsappService {
     
     this.client.on("ready", () => {
       console.log("Client is ready!");
-      this.client.getChats().then(chats => {
+      /*this.client.getChats().then(chats => {
         console.log(chats);
         
-        /* const myGroup = chats.find(id => id.name === "Wall-E")
-        client.sendMessage(myGroup.id._serialized, "Walle alive!") */
-    });
+         const myGroup = chats.find(id => id.name === "Wall-E")
+        client.sendMessage(myGroup.id._serialized, "Walle alive!") 
+      });
+      */
     });
 
     this.client.on("message", (message) => {

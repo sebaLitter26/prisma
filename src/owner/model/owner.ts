@@ -22,6 +22,6 @@ export class Owner {
   @Field(() => User, { nullable: true })
   user: User;
 
-  @Field({ nullable: true })
+  @Field(() => ID,{ nullable: true })
   userId: string;
 }

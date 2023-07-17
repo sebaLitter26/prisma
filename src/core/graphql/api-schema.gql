@@ -107,7 +107,7 @@ type Owner {
   content: String
   appartments: [Appartment!]
   user: User
-  userId: String
+  userId: ID
 }
 
 type Tenant {
@@ -125,6 +125,9 @@ type Building {
   createdAt: DateTime
   updatedAt: DateTime
   address: String
+  location: String
+  floors: Float
+  letter: String
   appartments: [Appartment!]!
 }
 
@@ -184,13 +187,13 @@ type Mutation {
   createUser(createUserInput: CreateUserInput!): User!
   updateUser(updateUserInput: UpdateUserInput!): User!
   blockUser(id: ID!): User!
-  signup(signupInput: SignupInput!): AuthResponse!
-  login(loginInput: LoginInput!): AuthResponse!
+  signup(input: SignupInput!): AuthResponse!
+  login(input: LoginInput!): AuthResponse!
   createAppartment(input: CreateAppartmentDTO!): Appartment!
   updateAppartment(input: UpdateAppartmentDTO!): Appartment!
   deleteAppartment(id: String!): Appartment!
   createBuilding(input: CreateBuildingDTO!): Building!
-  updateBuilding(input: CreateBuildingDTO!): Building!
+  updateBuilding(input: UpdateBuildingDTO!): Building!
   deleteBuilding(id: String!): Building!
   createOwner(input: CreateOwnerDTO!): Owner!
   updateOwner(input: UpdateOwnerDTO!): Owner!
@@ -259,37 +262,48 @@ input LoginInput {
 
 input CreateAppartmentDTO {
   content: String!
-  buildingId: String!
+  buildingId: ID!
 }
 
 input UpdateAppartmentDTO {
   content: String
-  buildingId: String
-  id: String!
+  buildingId: ID
+  id: ID!
 }
 
 input CreateBuildingDTO {
   address: String
+  location: String
+  floors: Float
+  letter: String
+}
+
+input UpdateBuildingDTO {
+  address: String
+  location: String
+  floors: Float
+  letter: String
+  id: ID!
 }
 
 input CreateOwnerDTO {
   content: String!
-  appartmentId: String!
+  appartmentId: ID!
 }
 
 input UpdateOwnerDTO {
   content: String
-  appartmentId: String
-  id: String!
+  appartmentId: ID
+  id: ID!
 }
 
 input CreateTenantDTO {
   content: String!
-  userId: String!
+  userId: ID!
 }
 
 input UpdateTenantDTO {
   content: String
-  userId: String
-  id: String!
+  userId: ID
+  id: ID!
 }

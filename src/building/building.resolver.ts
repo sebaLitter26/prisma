@@ -28,7 +28,7 @@ export class BuildingResolver {
 
   @Mutation(() => Building)
   async updateBuilding(
-    @Args({ name: 'input', type: () => CreateBuildingDTO })
+    @Args({ name: 'input', type: () => UpdateBuildingDTO })
     data: UpdateBuildingDTO,
   ) {
     return await this.buildingService.update(data);

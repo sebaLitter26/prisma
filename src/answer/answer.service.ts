@@ -3,7 +3,6 @@ import { PrismaService } from '../core/prisma/prisma.service';
 import { CreateAnswerDTO } from './dto/create-answer.dto';
 import { UpdateAnswerDTO } from './dto/update-answer.dto';
 import { PaginationArgs, SearchArgs } from '../common/dto/args';
-import { log } from 'console';
 
 @Injectable()
 export class AnswerService {
