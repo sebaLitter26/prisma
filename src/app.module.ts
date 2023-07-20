@@ -30,6 +30,6 @@ import { TenantModule } from './tenant/tenant.module';
     OwnerModule,
     TenantModule
     
-  ],
+  ]
 })
 export class AppModule {}

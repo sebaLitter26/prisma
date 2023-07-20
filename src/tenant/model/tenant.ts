@@ -14,7 +14,7 @@ export class Tenant {
   updatedAt: Date;
 
   @Field({ nullable: true })
-  content: string;
+  observation: string;
 
   @Field(() => [Appartment], { nullable: true })
   appartment: Appartment[];

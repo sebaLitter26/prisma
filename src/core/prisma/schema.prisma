@@ -64,32 +64,33 @@ model Building {
   location    String
   floors      Int
   letter      String       @db.Char(1)
-  prueba      String
   appartments Appartment[]
 
   @@index([address])
 }
 
 model Appartment {
-  id         String    @id @default(uuid())
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
-  content    String
-  buildingId String?
-  tenantId   String?   @unique
-  ownerId    String?
-  building   Building? @relation(fields: [buildingId], references: [id])
-  owner      Owner?    @relation(fields: [ownerId], references: [id])
-  tenant     Tenant?   @relation(fields: [tenantId], references: [id])
+  id          String    @id @default(uuid())
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  observation String
+  floor       Int
+  letter      String    @db.Char(1)
+  buildingId  String?
+  tenantId    String?   @unique
+  ownerId     String?
+  building    Building? @relation(fields: [buildingId], references: [id])
+  owner       Owner?    @relation(fields: [ownerId], references: [id])
+  tenant      Tenant?   @relation(fields: [tenantId], references: [id])
 
-  @@index([content])
+  @@unique([floor, letter, buildingId])
 }
 
 model Tenant {
   id          String      @id @default(uuid())
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
-  content     String
+  observation String
   userId      String?     @unique
   appartments Appartment?
   user        User?       @relation(fields: [userId], references: [id])
@@ -99,7 +100,7 @@ model Owner {
   id          String       @id @default(uuid())
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
-  content     String
+  observation String
   userId      String?      @unique
   appartments Appartment[]
   user        User?        @relation(fields: [userId], references: [id])

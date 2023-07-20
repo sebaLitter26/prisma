@@ -12,9 +12,9 @@ async function bootstrap() {
 
   //Global Error Handling
   const { httpAdapter } = app.get(HttpAdapterHost);
-  app.useGlobalFilters(new PrismaClientExceptionFilter(httpAdapter, {
-    P2022: HttpStatus.BAD_REQUEST,
-  }));
+  app.useGlobalFilters(new PrismaClientExceptionFilter(httpAdapter
+    //, {P2022: HttpStatus.BAD_REQUEST,}
+  ));
 
 
   await app.listen(process.env.PORT || 3000);

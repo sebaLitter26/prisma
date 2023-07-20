@@ -9,12 +9,12 @@ export class AppartmentResolver {
   constructor(private readonly appartmentService: AppartmentService) {}
 
   @Query(() => [Appartment])
-  async Appartments() {
+  async appartments() {
     return await this.appartmentService.getMany();
   }
 
   @Query(() => Appartment)
-  async Appartment(@Args('id') id: string) {
+  async appartment(@Args('id') id: string) {
     return await this.appartmentService.get(id);
   }
 

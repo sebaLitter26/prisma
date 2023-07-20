@@ -44,8 +44,10 @@ import {
       errorCodesStatusMapping?: ErrorCodesStatusMapping,
     ) {
       super(applicationRef);
+
+      
   
-      if (errorCodesStatusMapping) {
+      if (!errorCodesStatusMapping) {
         this.errorCodesStatusMapping = Object.assign(
           this.errorCodesStatusMapping,
           errorCodesStatusMapping,
@@ -63,14 +65,15 @@ import {
       host: ArgumentsHost,
     ) {
 
+      //console.log(exception.message);
         
         
       if (exception instanceof Prisma.PrismaClientKnownRequestError) {
         return this.catchClientKnownRequestError(exception, host);
       }
-      /* if (exception instanceof Prisma.NotFoundError ) {
+      if (exception instanceof Prisma.NotFoundError ) {
         return this.catchNotFoundError(exception, host);
-      } */
+      }
     }
   
     private catchClientKnownRequestError(
@@ -84,7 +87,8 @@ import {
         return super.catch(exception, host);
       }
   
-      console.log(statusCode, message, exception.message);
+      //console.log(statusCode, message);
+      throw new HttpException({ statusCode, message }, statusCode);
       super.catch(new HttpException({ statusCode, message }, statusCode), host);
     }
   
@@ -93,7 +97,7 @@ import {
       host: ArgumentsHost,
     ) {
       const statusCode = HttpStatus.NOT_FOUND;
-  
+      throw new HttpException({ statusCode, message }, statusCode);
       super.catch(new HttpException({ statusCode, message }, statusCode), host);
     }
   

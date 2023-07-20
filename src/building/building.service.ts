@@ -16,10 +16,18 @@ export class BuildingService {
   }
 
   async get(id: string) {
-    return await this.data.building.findUnique({
+    const building = await this.data.building.findUnique({
       where: { id },
       include: { appartments: true },
     });
+
+    if (!building) {
+      throw new NotFoundException({
+        code: PublicErrors.INVALID_CREDENTIALS,
+        message: `Building dont exist`,
+      });
+    }
+    return building;
   }
 
   async create(data: CreateBuildingDTO) {
@@ -38,7 +46,7 @@ export class BuildingService {
     const building = await this.getBuilding(data.id);
 
     //Verifica que el nuevo address sea unico. Que no exista en otro edificio.
-    await this.validateBuilding(building.address);
+    await this.validateBuilding(data.address);
 
     return await this.data.building.update({
       where: { id: data.id },
@@ -74,7 +82,7 @@ export class BuildingService {
     if (!building) {
         throw new NotFoundException({
           code: PublicErrors.INVALID_CREDENTIALS,
-          message: `Invalid credentials`,
+          message: `Building dont exist`,
         });
     }
     return building;

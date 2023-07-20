@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, HttpException, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/core/prisma/prisma.service';
 import { CreateAppartmentDTO } from './dto/create-appartment.dto';
 import { UpdateAppartmentDTO } from './dto/update-appartment.dto';
@@ -21,6 +21,7 @@ export class AppartmentService {
   }
 
   async create(data: CreateAppartmentDTO) {
+
     return await this.data.appartment.create({
       data,
       include: { building: true, owner: true, tenant: true },

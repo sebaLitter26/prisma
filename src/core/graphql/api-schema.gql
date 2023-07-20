@@ -104,7 +104,7 @@ type Owner {
   id: ID
   createdAt: DateTime
   updatedAt: DateTime
-  content: String
+  observation: String
   appartments: [Appartment!]
   user: User
   userId: ID
@@ -114,7 +114,7 @@ type Tenant {
   id: ID
   createdAt: DateTime
   updatedAt: DateTime
-  content: String
+  observation: String
   appartment: [Appartment!]
   user: User
   userId: String
@@ -135,7 +135,9 @@ type Appartment {
   id: ID
   createdAt: DateTime
   updatedAt: DateTime
-  content: String
+  floor: Float
+  letter: String
+  observation: String
   owner: Owner
   ownerId: String
   tenant: Tenant
@@ -155,8 +157,8 @@ type Query {
   doQuiz(input: CheckAnswerDTO!): QuizResult!
   user(id: ID!): User!
   revalidate: AuthResponse!
-  Appartments: [Appartment!]!
-  Appartment(id: String!): Appartment!
+  appartments: [Appartment!]!
+  appartment(id: String!): Appartment!
   buildings: [Building!]!
   building(id: String!): Building!
   Owners: [Owner!]!
@@ -261,12 +263,16 @@ input LoginInput {
 }
 
 input CreateAppartmentDTO {
-  content: String!
+  floor: Float
+  letter: String
+  observation: String!
   buildingId: ID!
 }
 
 input UpdateAppartmentDTO {
-  content: String
+  floor: Float
+  letter: String
+  observation: String
   buildingId: ID
   id: ID!
 }
@@ -287,23 +293,23 @@ input UpdateBuildingDTO {
 }
 
 input CreateOwnerDTO {
-  content: String!
+  observation: String!
   appartmentId: ID!
 }
 
 input UpdateOwnerDTO {
-  content: String
+  observation: String
   appartmentId: ID
   id: ID!
 }
 
 input CreateTenantDTO {
-  content: String!
+  observation: String!
   userId: ID!
 }
 
 input UpdateTenantDTO {
-  content: String
+  observation: String
   userId: ID
   id: ID!
 }

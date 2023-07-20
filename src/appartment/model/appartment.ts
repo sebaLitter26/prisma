@@ -15,7 +15,13 @@ export class Appartment {
   updatedAt: Date;
 
   @Field({ nullable: true })
-  content: string;
+  floor: number;
+
+  @Field({ nullable: true })
+  letter: string;
+
+  @Field({ nullable: true })
+  observation: string;
 
   @Field(() => Owner, { nullable: true })
   owner: Owner;
