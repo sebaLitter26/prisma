@@ -161,8 +161,8 @@ type Query {
   appartment(id: String!): Appartment!
   buildings: [Building!]!
   building(id: String!): Building!
-  Owners: [Owner!]!
-  Owner(id: String!): Owner!
+  owners: [Owner!]!
+  owner(id: String!): Owner!
   tenants: [Tenant!]!
   tenant(id: String!): Tenant!
 }
@@ -294,12 +294,12 @@ input UpdateBuildingDTO {
 
 input CreateOwnerDTO {
   observation: String!
-  appartmentId: ID!
+  appartmentId: [ID!]!
 }
 
 input UpdateOwnerDTO {
   observation: String
-  appartmentId: ID
+  appartmentId: [ID!]
   id: ID!
 }
 

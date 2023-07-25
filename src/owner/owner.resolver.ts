@@ -9,12 +9,12 @@ export class OwnerResolver {
   constructor(private readonly ownerService: OwnerService) {}
 
   @Query(() => [Owner])
-  async Owners() {
+  async owners() {
     return await this.ownerService.getMany();
   }
 
   @Query(() => Owner)
-  async Owner(@Args('id') id: string) {
+  async owner(@Args('id') id: string) {
     return await this.ownerService.get(id);
   }
 

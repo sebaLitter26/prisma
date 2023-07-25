@@ -11,6 +11,6 @@ export class CreateOwnerDTO {
 
   @IsNotEmpty()
   @IsUUID()
-  @Field(() => ID, { nullable: false })
-  appartmentId: string;
+  @Field(() => [ID], { nullable: false })
+  appartmentId: string[];
 }
