@@ -155,6 +155,7 @@ type Query {
   category(id: String!): Category!
   quiz(input: QuizDTO!): Quiz!
   doQuiz(input: CheckAnswerDTO!): QuizResult!
+  users(roles: [Roles!]): [User!]!
   user(id: ID!): User!
   revalidate: AuthResponse!
   appartments: [Appartment!]!

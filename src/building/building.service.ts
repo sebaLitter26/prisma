@@ -46,7 +46,7 @@ export class BuildingService {
     const building = await this.getBuilding(data.id);
 
     //Verifica que el nuevo address sea unico. Que no exista en otro edificio.
-    await this.validateBuilding(data.address);
+    if(data.address) await this.validateBuilding(data.address);
 
     return await this.data.building.update({
       where: { id: data.id },

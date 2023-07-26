@@ -5,7 +5,6 @@ import { User } from './model/user';
 import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
 import { ValidRolesArgs } from './dto/args/roles.arg';
-import { ValidRoles } from '../auth/enums/valid-roles.enum';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { Roles, User as UserSchema } from '@prisma/client';
@@ -20,17 +19,17 @@ export class UserResolver {
     return this.userService.create(createUserInput);
   }
 
-  @Query(() => [User], { name: 'user' })
-  async findAll(
+  @Query(() => [User], { name: 'users' })
+  async users(
     @Args() validRoles: ValidRolesArgs,
     @CurrentUser([Roles.admin, Roles.superUser ]) user: User
-  ):Promise<UserSchema[]> {
+  ) {
 
     return this.userService.findAll( validRoles.roles );
   }
 
   @Query(() => User, { name: 'user' })
-  async findOne( 
+  async user( 
     @Args('id', { type: () => ID }, ParseUUIDPipe ) id: string,
     @CurrentUser([Roles.admin, Roles.superUser ]) user: User
   ): Promise<UserSchema | null> {
