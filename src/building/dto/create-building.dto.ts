@@ -1,5 +1,5 @@
 import { Field, InputType } from '@nestjs/graphql';
-import { IsAlpha, IsNotEmpty, IsNumber, Max, MaxLength, Min, MinLength } from 'class-validator';
+import { IsAlpha, IsNotEmpty, IsNumber, IsOptional, Max, MaxLength, Min, MinLength } from 'class-validator';
 
 @InputType()
 export class CreateBuildingDTO {
@@ -28,4 +28,8 @@ export class CreateBuildingDTO {
   @MaxLength(1, { message: 'Only one letter allowed'})
   @Field(()=> String,{ nullable: true })
   letter: string;
+
+  @IsOptional()
+  @Field(()=> File,{ nullable: true })
+  image: File;
 }
