@@ -64,6 +64,7 @@ model Building {
   location    String
   floors      Int
   letter      String       @db.Char(1)
+  images      String[]
   appartments Appartment[]
 
   @@index([address])

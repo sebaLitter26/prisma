@@ -70,14 +70,13 @@ import {
 
       //console.log(exception.message);
         
-      let error = null;
       if (exception instanceof Prisma.PrismaClientKnownRequestError) {
-        error = this.catchClientKnownRequestError(exception, host);
+        return this.catchClientKnownRequestError(exception, host);
       }
-      if (exception instanceof Prisma.NotFoundError ) {
+      /* if (exception instanceof Prisma.NotFoundError ) {
         error = this.catchNotFoundError(exception, host);
       }
-      return error;
+      return error; */
     }
   
     private catchClientKnownRequestError(

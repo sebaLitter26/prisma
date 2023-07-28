@@ -1,5 +1,5 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql';
-import { Appartment } from 'src/appartment/model/appartment';
+import { Appartment } from '../../appartment/model/appartment';
 
 @ObjectType()
 export class Building {
@@ -24,6 +24,9 @@ export class Building {
   @Field({ nullable: true })
   letter: string;
 
-  @Field(() => [Appartment])
+  @Field(() => String , { nullable: true })
+  images: string[];
+
+  @Field(() => [Appartment] , { nullable: true })
   appartments: Appartment[];
 }

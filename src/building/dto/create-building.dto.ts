@@ -30,6 +30,6 @@ export class CreateBuildingDTO {
   letter: string;
 
   @IsOptional()
-  @Field(()=> File,{ nullable: true })
-  image: File;
+  @Field(()=> [String],{ nullable: true })
+  images: string[];
 }

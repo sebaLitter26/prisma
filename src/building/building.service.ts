@@ -70,7 +70,7 @@ export class BuildingService {
   } */
 
   async delete(id: string) {
-    const building = await this.getBuilding(id);
+    //const building = await this.getBuilding(id);
 
     return await this.data.building.delete({ where: { id } });
   }

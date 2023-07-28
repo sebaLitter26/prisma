@@ -128,7 +128,8 @@ type Building {
   location: String
   floors: Float
   letter: String
-  appartments: [Appartment!]!
+  images: String
+  appartments: [Appartment!]
 }
 
 type Appartment {
@@ -283,6 +284,7 @@ input CreateBuildingDTO {
   location: String
   floors: Float
   letter: String
+  images: [String!]
 }
 
 input UpdateBuildingDTO {
@@ -290,6 +292,7 @@ input UpdateBuildingDTO {
   location: String
   floors: Float
   letter: String
+  images: [String!]
   id: ID!
 }
 
