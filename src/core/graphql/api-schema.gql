@@ -128,7 +128,7 @@ type Building {
   location: String
   floors: Float
   letter: String
-  images: String
+  images: [String!]
   appartments: [Appartment!]
 }
 

@@ -24,7 +24,7 @@ export class Building {
   @Field({ nullable: true })
   letter: string;
 
-  @Field(() => String , { nullable: true })
+  @Field(() => [String] , { nullable: true })
   images: string[];
 
   @Field(() => [Appartment] , { nullable: true })

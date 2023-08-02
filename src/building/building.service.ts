@@ -43,10 +43,11 @@ export class BuildingService {
   }
 
   async update(data: UpdateBuildingDTO) {
-    const building = await this.getBuilding(data.id);
+    //const building = await this.getBuilding(data.id);
 
     //Verifica que el nuevo address sea unico. Que no exista en otro edificio.
-    if(data.address) await this.validateBuilding(data.address);
+    //if(data.address) await this.validateBuilding(data.address);
+    
 
     return await this.data.building.update({
       where: { id: data.id },
